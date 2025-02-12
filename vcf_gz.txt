@@ -1,0 +1,15 @@
+/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/all_rice_O_mer.fa.gz.dac1d73.community.0.fa.out/all_rice_O_mer.fa.gz.dac1d73.community.0.fa.dac1d73.eb0f3d3.61fd393.smooth.final.O_mer.decomposed.vcf
+/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/all_rice_O_mer.fa.gz.dac1d73.community.1.fa.out/
+all_rice_O_mer.fa.gz.dac1d73.community.1.fa.dac1d73.eb0f3d3.61fd393.smooth.final.O_mer.decomposed.vcf
+/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/all_rice_O_mer.fa.gz.dac1d73.community.2.fa.out/all_rice_O_mer.fa.gz.dac1d73.community.2.fa.dac1d73.eb0f3d3.61fd393.smooth.final.O_mer.decomposed.vcf
+/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/all_rice_O_mer.fa.gz.dac1d73.community.3.fa.out/all_rice_O_mer.fa.gz.dac1d73.community.3.fa.dac1d73.eb0f3d3.61fd393.smooth.final.O_mer.decomposed.vcf
+/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/all_rice_O_mer.fa.gz.dac1d73.community.4.fa.out/all_rice_O_mer.fa.gz.dac1d73.community.4.fa.dac1d73.eb0f3d3.61fd393.smooth.final.O_mer.decomposed.vcf
+/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/all_rice_O_mer.fa.gz.dac1d73.community.5.fa.out/
+all_rice_O_mer.fa.gz.dac1d73.community.5.fa.dac1d73.eb0f3d3.61fd393.smooth.final.O_mer.decomposed.vcf
+/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/all_rice_O_mer.fa.gz.dac1d73.community.6.fa.out/all_rice_O_mer.fa.gz.dac1d73.community.6.fa.dac1d73.eb0f3d3.61fd393.smooth.final.O_mer.decomposed.vcf
+/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/all_rice_O_mer.fa.gz.dac1d73.community.7.fa.out/all_rice_O_mer.fa.gz.dac1d73.community.7.fa.dac1d73.eb0f3d3.61fd393.smooth.final.O_mer.decomposed.vcf
+/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/all_rice_O_mer.fa.gz.dac1d73.community.8.fa.out/all_rice_O_mer.fa.gz.dac1d73.community.8.fa.dac1d73.eb0f3d3.61fd393.smooth.final.O_mer.decomposed.vcf
+/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/all_rice_O_mer.fa.gz.dac1d73.community.9.fa.out/all_rice_O_mer.fa.gz.dac1d73.community.9.fa.dac1d73.eb0f3d3.61fd393.smooth.final.O_mer.decomposed.vcf
+/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/all_rice_O_mer.fa.gz.dac1d73.community.10.fa.out/
+all_rice_O_mer.fa.gz.dac1d73.community.10.fa.dac1d73.eb0f3d3.61fd393.smooth.final.O_mer.decomposed.vcf
+/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/all_rice_O_mer.fa.gz.dac1d73.community.11.fa.out/all_rice_O_mer.fa.gz.dac1d73.community.11.fa.dac1d73.eb0f3d3.61fd393.smooth.final.O_mer.decomposed.vcf
