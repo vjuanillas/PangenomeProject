@@ -1,5 +1,24 @@
-source("/Users/jongpaduhilao/Desktop/LAB_Files/Initial_Pangenome_analysis/Trial_4/Scripts/04_GO_viz.R")
+library(ggplot2)
+library(dplyr)
 
+# =================== #
+# Variables and Paths #
+# =================== #
+ 
+# set working directory
+setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90/Blast/Panther")
+
+# core files path
+pan_bp <- "/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90/Blast/Panther/merged_pan_BP.csv"
+pan_mf <- "/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90/Blast/Panther/merged_pan_MF.csv"
+pan_pc <- "/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90/Blast/Panther/merged_pan_PC.csv"
+# variable files path
+disp_mf <- "/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90/Blast/Panther/merged_dsp_MF.csv"
+disp_pc <- "/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90/Blast/Panther/merged_dsp_PC.csv"
+
+# ============================= #
+# Create Visualization function #
+# ============================= #
 plot_GO_over <- function(go_mutated,title, top_n = 10, plot_name) {
   go_mutated <- read.csv(go_mutated, header = TRUE)
   go_mutated <- go_mutated[!(go_mutated[[1]] %in% 
@@ -55,20 +74,11 @@ plot_GO_over <- function(go_mutated,title, top_n = 10, plot_name) {
 }
 
 #### PAN CATEGORIES #####
-
-setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90/Blast/Panther")
-pan_bp <- "/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90/Blast/Panther/merged_pan_BP.csv"
-pan_mf <- "/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90/Blast/Panther/merged_pan_MF.csv"
-pan_pc <- "/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90/Blast/Panther/merged_pan_PC.csv"
-
 plot_GO_over(pan_bp, "Top 10 Biological Process Enrichment", 10, "top10_pan_BP")
 plot_GO_over(pan_mf, "Top 10 Molecular Function Enrichment", 10, "top10_pan_MF")
 plot_GO_over(pan_pc, "Top 10 Protein Class Enrichment", 10, "top10_pan_PC")
 
 #### DISPENSABLE CATEGORIES #####
-disp_mf <- "/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90/Blast/Panther/merged_dsp_MF.csv"
-disp_pc <- "/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90/Blast/Panther/merged_dsp_PC.csv"
-
 plot_GO_over(disp_mf, "Top 10 Molecular Function Enrichment (Variable nodes)", 10, "top10_dsp_mf")
 plot_GO_over(disp_pc, "Top 10 Protein Class Enrichment (Variable nodes)", 10, "top10_dsp_pc")
 

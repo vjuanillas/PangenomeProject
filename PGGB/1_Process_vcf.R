@@ -2,14 +2,14 @@ library(data.table)
 library(dplyr)
 library(tidyverse)
 
-# set wd
-# change the path to vcf if needed
+# Change the parsimonious combinations based on your own rules
 
+# set working directory
 setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90_v3")
 
-#####################
-### Load VCF File ###
-#####################
+# ============= #
+# Load VCF File #
+# ============= #
 
 vcf <- fread("pggb_merged_final_clean_v2.vcf")
 
@@ -31,9 +31,9 @@ vcf_info_12chrs <- rbindlist(lapply(1:length(vcf_raw), function(x) {
   vcf_raw_now <- vcf_raw[[x]]
   chr_now <- gsub("O_mer#0#out_", "", names(vcf_raw[x]))
   
-  ##############################
-  ### Get Allele information ###
-  ##############################
+  # ====================== #
+  # Get Allele information #
+  # ====================== #
   
   
   N_allele <- vcf_raw_now[,.(all=paste(REF,ALT,sep = ","))][,lapply(.SD, function(x) sapply(strsplit(x,","),function(y) length(y)))][,setnames(.SD,"N_allele")]
@@ -43,9 +43,9 @@ vcf_info_12chrs <- rbindlist(lapply(1:length(vcf_raw), function(x) {
   vcf_info <- vcf_raw_now[,c(1,2,3,4,5)][,setnames(.SD,old="#CHROM",new="CHROM")][,CHROM:=gsub("O_mer#0#out_","",CHROM)]
   vcf_info <- data.table(vcf_info, N_allele, N_bp_ref, N_bp_diff)
   
-  ######################################
-  ### Determine General Variant Type ###
-  ######################################
+  # ============================== #
+  # Determine General Variant Type #
+  # ============================== #
   # Classify variants based on allele length differences
   vcf_info[N_bp_diff == 0 & N_bp_ref == 1, type := "SNP"]
   vcf_info[N_bp_diff == 0 & N_bp_ref < 50 & N_bp_ref != 1, type := "MNP"]
@@ -60,9 +60,9 @@ vcf_info_12chrs <- rbindlist(lapply(1:length(vcf_raw), function(x) {
   vcf_info[type == "SNP", N_bp := 1]
   vcf_info[type != "SNP", N_bp := N_bp_diff]
   
-  #########################
-  ### Get Genotype data ###
-  #########################
+  # ================= #
+  # Get Genotype data #
+  # ================= #
   
   # Get genotype
   geno <- vcf_raw_now[, 10:15]
@@ -79,9 +79,9 @@ vcf_info_12chrs <- rbindlist(lapply(1:length(vcf_raw), function(x) {
   print(paste("Processing missing genotypes for chromosome done",chr_now))
   
   
-  ##################################
-  ### Determine Variant Subtypes ###
-  ##################################
+  # ========================== #
+  # Determine Variant Subtypes #
+  # ========================== #
   # Classify SNPs and MNPs
   vcf_info[type == "SNP", subtype := "SNP"]
   vcf_info[type == "MNP", subtype := "MNP"]
@@ -127,9 +127,9 @@ fwrite(vcf_summary, "whole_genome/VCF_stats_summary.txt", sep = "\t", quote = F,
 
 print("All per-chromosome files and merged summaries saved!")
 
-################################################
-##### Summary of Variant Counts: Parsimony #####
-################################################
+# ==================================== #
+# Summary of Variant Counts: Parsimony #
+# ==================================== #
 
 # handle sites with complete data only
 vcf_clean <- vcf_info_12chrs %>% filter(missing == 0)
@@ -156,9 +156,9 @@ vcf_clean_raw_stats <- vcf_clean[, .(
 fwrite(vcf_clean_raw_stats, "whole_genome/VCF_raw_variant_stats_WG.txt", sep = "\t", quote=F, row.names = F, col.names=T)
 
 
-#####################
-### combinations ####
-#####################
+# ============ #
+# combinations #
+# ============ #
 # this will vary case to case
 singletons <- c("Ob","Og","Osi","Or","Osj","Osj(IRGSP)")
 lineage <- c("Osj,Osj(IRGSP)","Ob,Og","Or,Osj,Osj(IRGSP)","Or,Osi,Osj,Osj(IRGSP)")
@@ -215,9 +215,9 @@ setorder(loss_DelSV, subtype)
 fwrite(gain_InsSV, "whole_genome/Gain_parsimony_all_summary.txt", sep = "\t", quote=F, row.names = F, col.names=T)
 fwrite(loss_DelSV, "whole_genome/Loss_parsimony_all_summary.txt", sep = "\t", quote=F, row.names = F, col.names=T)
 
-#############################################
-### Per-taxon parsimonious combination ###
-#############################################
+# ================================== #
+# Per-taxon parsimonious combination #
+# ================================== #
 
 # Define taxon groups and corresponding insertion and deletion rules
 # gain

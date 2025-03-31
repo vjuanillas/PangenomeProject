@@ -4,9 +4,11 @@ Programs:
 - odgi v0.9.0-0-g1895f496
 - seqkit v2.6.0
 
-1. Generate Pangenome
-```
+## Steps
 
+1. Go to directory of generated pangenomes
+```
+cd $asm_dir
 ```
 2. Merge the pangenomes per chromosome and characterize by quantifying number of countables and pangenome size. 
    
@@ -96,43 +98,9 @@ for col in {2..8}; do
 done
 ```
 
-6. Determine quantity of repetitive elements. Insert repeat_masking script
+6. Determine quantity of repetitive elements. Edit variables inside repeat_masker_pggb.sh
 ```
-rep_library="/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/RM_lib/pggb_asm5-families.fa"
-dir=/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/fasta_annot
-
-fasta_files=("asm5_graphs.core.fasta" "asm5_graphs.dispensable.fasta" "asm5_graphs.private.fasta")
-
-# Loop through each FASTA file
-for fasta in "${fasta_files[@]}"; do
-    # Get the basename without the .fasta extension
-    base_name=$(basename "$fasta" .fasta)
-
-    # Define the output directory for this file
-    output_dir="$dir/$base_name"
-
-    # Create the output directory if it doesn't exist
-    mkdir -p "$output_dir"
-
-    # Run RepeatMasker
-    RepeatMasker -e ncbi -pa 16 -lib "$rep_library" -xsmall -dir "$output_dir" "$dir/$fasta"
-    echo "First RepeatMasker run completed for $fasta using $rep_library"
-
-    # Find the masked file generated
-    masked_file="$output_dir/$(basename "$fasta").masked"
-
-    # Check if the masked file exists before proceeding
-    if [[ -f "$masked_file" ]]; then
-        echo "Re-masking $masked_file with Repbase library (-species rice)..."
-
-        # Run RepeatMasker again using Repbase (-species rice)
-        RepeatMasker -e ncbi -pa 16 -species rice -xsmall -dir "$output_dir" "$masked_file"
-
-        echo "Second RepeatMasker run completed for $masked_file using Repbase (-species rice)"
-    else
-        echo "Warning: Masked file $masked_file not found, skipping second RepeatMasker run."
-    fi
-done
+bash repeat_masker_pggb.sh
 ```
 
 Visualize

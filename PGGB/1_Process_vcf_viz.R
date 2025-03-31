@@ -1,4 +1,4 @@
-#install.packages("ggpattern")
+# install.packages("ggpattern")
 # install.packages("ggpubr")
 library(ggplot2)
 library(ggpattern)
@@ -8,11 +8,10 @@ library(stringr)  # For regex-based text processing
 library(tidyr)
 library(ggpubr)
 
+# set working directory
 setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90_v3/whole_genome")
 
-###
 ## # add data value in the middle of the donuts
-# operate from here
 # Read gains and loss data with SV and INDELs
 gain_raw <- fread("Gain_parsimony_all_summary.txt")
 loss_raw <- fread("Loss_parsimony_all_summary.txt")

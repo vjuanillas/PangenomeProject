@@ -1,18 +1,32 @@
-#############################
-### REPEATS VISUALIZATION ###
-#############################
-
-# process the repeats from repeat masker and save as shown in pangenome_statistcs.txt
-
 library(data.table)
 library(ggplot2)
 library(ggpubr)
 library(tidyr)
 library(dplyr)
 
+# ===================== #
+# REPEATS VISUALIZATION #
+# ===================== #
+# This script is used to visualize the repeat statistics from the pangenome analysis.
+# The script will create a stacked bar plot for the repeat types and their lengths
+# across different pangenome categories (Core, Dispensable, Private).
+# The script will also create a combined stacked bar plot for the number and length
+# of nodes in the pangenome categories.
+# The script will save the plots as JPEG files.
+# The script assumes that the input data is in the form of a data frame with the following columns:
+# - Category: The pangenome category (Core, Dispensable, Private)
+# - TE_Type: The type of transposable element (SINEs, LINEs, etc.)
+# process the repeats from repeat masker and save as shown in pangenome_statistics.txt
+
+# set working directory
 setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90")
+# load data
 repeats <- fread("pangenome_repeats.tsv")
 stats <- fread("pangenome_statistics.tsv")
+
+# ============================= #
+# Create Visualization function #
+# ============================= #
 
 plot_repeats_stacked_bar <- function(data, scale_factor = 1e3, scale_label, output) {
   # Reshape data to long format
@@ -83,5 +97,6 @@ plot_stacked_bar_combined <- function(data, output) {
          dpi = 300)
 }
 
+# plot the stacked bar plot for repeats
 plot_repeats_stacked_bar(repeats, 1e6, "Mb", "pangenome_repeats")
 plot_stacked_bar_combined(stats,"pangenome_stats")
