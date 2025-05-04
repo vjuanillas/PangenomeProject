@@ -14,7 +14,7 @@ library(gtable)
 library(data.table)
 
 # set wd
-setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90_v2")
+setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p60/")
 # fetch gain and loss files
 summed_gain_results <- fread("whole_genome/GAIN_statistics_final.txt")
 summed_loss_results <- fread("whole_genome/LOSS_statistics_final.txt")

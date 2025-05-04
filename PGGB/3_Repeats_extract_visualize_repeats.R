@@ -2,7 +2,7 @@ library(data.table)
 library(dplyr)
 library(stringr)
 
-setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90_v2")
+setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p60")
 
 vcf_merge_gain <- fread("whole_genome/VCF_clean_gain_forMAP.txt")
 vcf_merge_loss <- fread("whole_genome/VCF_clean_loss_forMAP.txt")
@@ -14,7 +14,7 @@ if (!dir.exists("fasta_annot")) {
 }
 
 if (!dir.exists("fasta_annot/indel")) {
-  dir.create("fasta_annot/sv")
+  dir.create("fasta_annot/indel")
 }
 
 if (!dir.exists("fasta_annot/sv")) {
@@ -147,12 +147,13 @@ library(tidyverse)
 library(dplyr)
 library(forcats)
 
-setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90_v2")
-repeats <- fread("whole_genome/repeat_statistics.txt")
+setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p60")
 
-repeats$Unmasked_gain <- repeats$Total_Gain_Length - repeats$Masked_Gain_Length 
-repeats$Unmasked_loss <- repeats$Total_Loss_Length - repeats$Masked_Loss_Length
-fwrite(repeats, "whole_genome/Repeats_stats.txt", sep = "\t", quote=F, row.names = F, col.names=T)
+if (!dir.exists("whole_genome/repeats")) {
+  dir.create("whole_genome/repeats")
+}
+
+repeats <- fread("whole_genome/repeats/repeat_statistics.txt")
 
 repeats_INDEL <- repeats %>% filter(Type == "INDEL")
 repeats_SV <- repeats %>% filter(Type == "SV")
@@ -217,7 +218,8 @@ plot_stacked_bar <- function(data, scale_factor = 1e3,scale_label,output) {
 }
 
 
-plot_stacked_bar(repeats_INDEL, 1e3, "Kb", "whole_genome/Repeats_INDEL")
-plot_stacked_bar(repeats_SV, 1e6, "Mb", "whole_genome/Repeats_SV")
+
+plot_stacked_bar(repeats_INDEL, 1e3, "Kb", "whole_genome/repeats/Repeats_INDEL")
+plot_stacked_bar(repeats_SV, 1e6, "Mb", "whole_genome/repeats/Repeats_SV")
 
 

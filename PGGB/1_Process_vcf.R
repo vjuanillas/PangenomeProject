@@ -2,16 +2,16 @@ library(data.table)
 library(dplyr)
 library(tidyverse)
 
-# Change the parsimonious combinations based on your own rules
+# set wd
+# change the path to vcf if needed
 
-# set working directory
-setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90_v3")
+setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p60/")
 
-# ============= #
-# Load VCF File #
-# ============= #
+#####################
+### Load VCF File ###
+#####################
 
-vcf <- fread("pggb_merged_final_clean_v2.vcf")
+vcf <- fread("pggb_merged_final_clean_p60.vcf")
 
 # split by chromosome
 vcf_raw <- split(vcf, by = "#CHROM")
@@ -31,9 +31,9 @@ vcf_info_12chrs <- rbindlist(lapply(1:length(vcf_raw), function(x) {
   vcf_raw_now <- vcf_raw[[x]]
   chr_now <- gsub("O_mer#0#out_", "", names(vcf_raw[x]))
   
-  # ====================== #
-  # Get Allele information #
-  # ====================== #
+  ##############################
+  ### Get Allele information ###
+  ##############################
   
   
   N_allele <- vcf_raw_now[,.(all=paste(REF,ALT,sep = ","))][,lapply(.SD, function(x) sapply(strsplit(x,","),function(y) length(y)))][,setnames(.SD,"N_allele")]
@@ -43,9 +43,9 @@ vcf_info_12chrs <- rbindlist(lapply(1:length(vcf_raw), function(x) {
   vcf_info <- vcf_raw_now[,c(1,2,3,4,5)][,setnames(.SD,old="#CHROM",new="CHROM")][,CHROM:=gsub("O_mer#0#out_","",CHROM)]
   vcf_info <- data.table(vcf_info, N_allele, N_bp_ref, N_bp_diff)
   
-  # ============================== #
-  # Determine General Variant Type #
-  # ============================== #
+  ######################################
+  ### Determine General Variant Type ###
+  ######################################
   # Classify variants based on allele length differences
   vcf_info[N_bp_diff == 0 & N_bp_ref == 1, type := "SNP"]
   vcf_info[N_bp_diff == 0 & N_bp_ref < 50 & N_bp_ref != 1, type := "MNP"]
@@ -60,9 +60,9 @@ vcf_info_12chrs <- rbindlist(lapply(1:length(vcf_raw), function(x) {
   vcf_info[type == "SNP", N_bp := 1]
   vcf_info[type != "SNP", N_bp := N_bp_diff]
   
-  # ================= #
-  # Get Genotype data #
-  # ================= #
+  #########################
+  ### Get Genotype data ###
+  #########################
   
   # Get genotype
   geno <- vcf_raw_now[, 10:15]
@@ -79,9 +79,9 @@ vcf_info_12chrs <- rbindlist(lapply(1:length(vcf_raw), function(x) {
   print(paste("Processing missing genotypes for chromosome done",chr_now))
   
   
-  # ========================== #
-  # Determine Variant Subtypes #
-  # ========================== #
+  ##################################
+  ### Determine Variant Subtypes ###
+  ##################################
   # Classify SNPs and MNPs
   vcf_info[type == "SNP", subtype := "SNP"]
   vcf_info[type == "MNP", subtype := "MNP"]
@@ -102,8 +102,8 @@ vcf_info_12chrs <- rbindlist(lapply(1:length(vcf_raw), function(x) {
   vcf_info[N_allele == 2, bi_multi := "Biallelic"]
   vcf_info[N_allele > 2, bi_multi := "Multiallelic"]
 
-  # save per-chromosome processed VCF files
-  fwrite(vcf_info[order(POS)], file=paste0("per_chromosome/VCF_RAW_",chr_now,".txt"), sep="\t")
+  # save per-chromosome processed VCF files if necessary
+  # fwrite(vcf_info[order(POS)], file=paste0("per_chromosome/VCF_RAW_",chr_now,".txt"), sep="\t")
   
   vcf_info
   }))
@@ -122,17 +122,27 @@ vcf_summary <- vcf_info_12chrs[, .(
   ALT_length = sum(nchar(ALT))   # Total length of ALT column
 ), by = .(type, subtype, CHROM), .SDcols = 11:16] # adjust column indices
 
-# save statistics
-fwrite(vcf_summary, "whole_genome/VCF_stats_summary.txt", sep = "\t", quote = F, row.names = F, col.names = T)
+# summarize general statistics for variants whole genome
+vcf_summary_WG <- vcf_info_12chrs[, .(
+  N_bubble = .N,
+  MissingRows = sum(rowSums(.SD == ".") > 0),  # Count rows with at least one "."
+  REF_length = sum(nchar(REF)),  # Total length of REF column
+  ALT_length = sum(nchar(ALT))   # Total length of ALT column
+), by = .(type, subtype), .SDcols = 11:16] # adjust column indices
 
+# save statistics
+fwrite(vcf_summary, "whole_genome/VCF_stats_raw_summary.txt", sep = "\t", quote = F, row.names = F, col.names = T)
+fwrite(vcf_summary_WG, "whole_genome/VCF_stats_WG_raw_summary.txt", sep = "\t", quote = F, row.names = F, col.names = T)
 print("All per-chromosome files and merged summaries saved!")
 
-# ==================================== #
-# Summary of Variant Counts: Parsimony #
-# ==================================== #
+################################################
+##### Summary of Variant Counts: Parsimony #####
+################################################
 
 # handle sites with complete data only
-vcf_clean <- vcf_info_12chrs %>% filter(missing == 0)
+# edit
+vcf_clean <- vcf_info_12chrs %>% 
+  filter(missing == 0 & !grepl("^N+$", REF) & !grepl("^N+$", ALT))
 
 # collapse accession names on new column for pattern matching
 vcf_clean$REF_accn <- apply(vcf_clean[,11:16], 1, function(x) paste(names(x)[which(x == 0)], collapse = ","))
@@ -145,7 +155,7 @@ vcf_clean_raw_stats <- vcf_clean[, .(
   ALT_length = sum(nchar(ALT))   # Total length of ALT column
 ), by = .(CHROM, subtype)]
 
-fwrite(vcf_clean_raw_stats, "whole_genome/VCF_raw_variant_stats_perChrom.txt", sep = "\t", quote=F, row.names = F, col.names=T)
+fwrite(vcf_clean_raw_stats, "whole_genome/VCF_clean_variant_stats_perChrom.txt", sep = "\t", quote=F, row.names = F, col.names=T)
 
 vcf_clean_raw_stats <- vcf_clean[, .(
   N_bubble = .N,
@@ -153,12 +163,12 @@ vcf_clean_raw_stats <- vcf_clean[, .(
   ALT_length = sum(nchar(ALT))   # Total length of ALT column
 ), by = .(subtype)]
 
-fwrite(vcf_clean_raw_stats, "whole_genome/VCF_raw_variant_stats_WG.txt", sep = "\t", quote=F, row.names = F, col.names=T)
+fwrite(vcf_clean_raw_stats, "whole_genome/VCF_clean_variant_stats_WG.txt", sep = "\t", quote=F, row.names = F, col.names=T)
 
 
-# ============ #
-# combinations #
-# ============ #
+#####################
+### combinations ####
+#####################
 # this will vary case to case
 singletons <- c("Ob","Og","Osi","Or","Osj","Osj(IRGSP)")
 lineage <- c("Osj,Osj(IRGSP)","Ob,Og","Or,Osj,Osj(IRGSP)","Or,Osi,Osj,Osj(IRGSP)")
@@ -183,6 +193,8 @@ fwrite(vcf_clean_func,"whole_genome/VCF_CLEAN_allchrs.txt",sep = "\t",quote = F,
 
 
 vcf_clean <- vcf_clean %>% filter(!ALT_accn %in% roots & ALT_accn != "") # filter out the root prior to quantification of parsimonious combinations
+# save the labeled vcf files for statistical analyses
+fwrite(vcf_clean, "whole_genome/VCF_Parsimony_Not_raw_statistics.txt", sep = "\t", quote=F, row.names = F, col.names=T)
 
 # summarize parsimonious from non-parsimonious
 vcf_parsimony_stats <- vcf_clean[, .(
@@ -190,8 +202,15 @@ vcf_parsimony_stats <- vcf_clean[, .(
   REF_length = sum(nchar(REF)),  # Total length of REF column
   ALT_length = sum(nchar(ALT))   # Total length of ALT column
 ), by = .(CHROM, par_not, subtype)]
+fwrite(vcf_parsimony_stats, "whole_genome/VCF_Parsimony_stats_perChrom.txt", sep = "\t", quote=F, row.names = F, col.names=T)
 
-fwrite(vcf_parsimony_stats, "whole_genome/VCF_Parsimony_stats.txt", sep = "\t", quote=F, row.names = F, col.names=T)
+# summarize parsimonious from non-parsimonious
+vcf_parsimony_stats_WG <- vcf_clean[, .(
+  N_bubble = .N,
+  REF_length = sum(nchar(REF)),  # Total length of REF column
+  ALT_length = sum(nchar(ALT))   # Total length of ALT column
+), by = .(par_not, subtype)]
+fwrite(vcf_parsimony_stats_WG, "whole_genome/VCF_Parsimony_stats_perWG.txt", sep = "\t", quote=F, row.names = F, col.names=T)
 
 # summarize whole-genome tree value for gain and loss 
 gain_InsSV <- vcf_clean[subtype %in% c("INS","SV_INS"),
@@ -215,9 +234,9 @@ setorder(loss_DelSV, subtype)
 fwrite(gain_InsSV, "whole_genome/Gain_parsimony_all_summary.txt", sep = "\t", quote=F, row.names = F, col.names=T)
 fwrite(loss_DelSV, "whole_genome/Loss_parsimony_all_summary.txt", sep = "\t", quote=F, row.names = F, col.names=T)
 
-# ================================== #
-# Per-taxon parsimonious combination #
-# ================================== #
+#############################################
+### Per-taxon parsimonious combination ###
+#############################################
 
 # Define taxon groups and corresponding insertion and deletion rules
 # gain
@@ -276,6 +295,9 @@ for (group in names(loss_taxon_groups)) {
 }
 
 ## fwrite vcf_clean_labelled with ID for alt_accn 
+fwrite(vcf_clean_labelled, "whole_genome/VCF_Clean_parsimony_labelled_gain_loss_final.txt", sep = "\t", quote = F, row.names = F, col.names = T)
+
+# separate Gains and Losses as summary
 # gain
 vcf_clean_gain <- vcf_clean_labelled %>% filter(Gain_Loss == "Gain") 
 vcf_clean_gain <- vcf_clean_gain[,.(N_bubble = .N, GAIN_length = sum(N_bp)), # ifelse DEL, take Ref as length of gain

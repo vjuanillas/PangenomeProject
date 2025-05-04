@@ -1,32 +1,19 @@
+#############################
+### REPEATS VISUALIZATION ###
+#############################
+
+# process the repeats from repeat masker and save as shown in pangenome_statistcs.txt
+
 library(data.table)
 library(ggplot2)
 library(ggpubr)
 library(tidyr)
 library(dplyr)
 
-# ===================== #
-# REPEATS VISUALIZATION #
-# ===================== #
-# This script is used to visualize the repeat statistics from the pangenome analysis.
-# The script will create a stacked bar plot for the repeat types and their lengths
-# across different pangenome categories (Core, Dispensable, Private).
-# The script will also create a combined stacked bar plot for the number and length
-# of nodes in the pangenome categories.
-# The script will save the plots as JPEG files.
-# The script assumes that the input data is in the form of a data frame with the following columns:
-# - Category: The pangenome category (Core, Dispensable, Private)
-# - TE_Type: The type of transposable element (SINEs, LINEs, etc.)
-# process the repeats from repeat masker and save as shown in pangenome_statistics.txt
-
-# set working directory
-setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p90")
-# load data
+setwd("/Users/jongpaduhilao/Desktop/LAB_Files/pggb/sample_output_all_O_mer_p60")
 repeats <- fread("pangenome_repeats.tsv")
 stats <- fread("pangenome_statistics.tsv")
 
-# ============================= #
-# Create Visualization function #
-# ============================= #
 
 plot_repeats_stacked_bar <- function(data, scale_factor = 1e3, scale_label, output) {
   # Reshape data to long format
@@ -97,6 +84,41 @@ plot_stacked_bar_combined <- function(data, output) {
          dpi = 300)
 }
 
-# plot the stacked bar plot for repeats
+plot_donut_combined <- function(data, output) {
+  # Function to create a single donut plot
+  create_donut <- function(df, column, title, colors) {
+    df <- df %>%
+      mutate(ymax = cumsum(!!sym(column)), 
+             ymin = lag(ymax, default = 0))
+    
+    ggplot(df, aes(ymax = ymax, ymin = ymin, xmax = 4, xmin = 2, fill = Categories)) +
+      geom_rect(color = "white", linewidth = 1) +
+      coord_polar(theta = "y") +
+      scale_fill_manual(values = colors) +
+      xlim(c(1, 4)) +
+      theme_void() +
+      theme(legend.position = "right") +
+      ggtitle(title)
+  }
+  
+  # Define colors
+  category_colors <- c("Core" = "#4DAF4A", "Dispensable" = "#377EB8", "Private" = "#E41A1C")
+  
+  # Donut Plots
+  p1 <- create_donut(data, "Proportion (Nodes)", "Proportion of Nodes", category_colors)
+  p2 <- create_donut(data, "Proportion (Length)", "Proportion of Length", category_colors)
+  
+  # Arranging plots (2x2 grid)
+  combined_plot <- ggarrange(p1, p2, ncol = 2, nrow = 2, common.legend = TRUE, legend = "right")
+  
+  # Save as JPEG
+  ggsave(filename = paste0(output, ".jpeg"), 
+         plot = combined_plot, 
+         width = 10, 
+         height = 8, 
+         dpi = 300)
+}
+
+
 plot_repeats_stacked_bar(repeats, 1e6, "Mb", "pangenome_repeats")
 plot_stacked_bar_combined(stats,"pangenome_stats")
