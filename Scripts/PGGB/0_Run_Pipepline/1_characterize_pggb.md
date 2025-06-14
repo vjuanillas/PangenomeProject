@@ -1,8 +1,12 @@
 # PGGB Analysis Pipeline
-Programs:
-- panacus v.0.2.5
-- odgi v0.9.0-0-g1895f496
-- seqkit v2.6.0
+After creating the graph pangenome, the following steps enumerate a workflow for characterizing the pangenome based on sequences encoded on the nodes.
+
+Make sure your current environment as the following programs installed:
+1. panacus v.0.2.5
+2. odgi v0.9.0-0-g1895f496
+3. seqkit v2.6.0
+4. RepeatMasker v4.1.7
+5. Diamond v2.1.10
 
 ## Steps
 
@@ -10,7 +14,7 @@ Programs:
 ```
 cd $asm_dir
 ```
-2. Merge the pangenomes per chromosome and characterize by quantifying number of countables and pangenome size. 
+2. Merge the pangenomes per chromosome and characterize by quantifying number of countables and pangenome size using Panacus.
    
 ```
 ls $(pwd)/all_rice_O_mer.fa.gz.dac1d73.community.{0..11}.fa.out/*smooth.final.og > asm5_og_graphs.txt
@@ -47,7 +51,7 @@ panacus-visualize asm5.ordered-histgrowth.node.tsv > asm5.ordered-histgrowth.nod
 Sample visualization:
 ![[Pasted image 20250324131826.png | 400]]
 
-4. Core, dispensable, and private. Calculate coverage of nodes by using Panacus.
+4. Categorize the countables into the following: Core, dispensable, and private. Categorization is based on the coverage of each asssembly on the countables as determined by Panacus. In this case, the countables are nodes.
 ```
 panacus table --count node --groupby-sample --threads 4 $gfa_asm5 > asm5_graphs.table.tsv
 
@@ -59,20 +63,7 @@ seq 0 7 | while read i; do
 awk -v i="$i" '$2 == i' asm5_graphs.table.total.tsv | wc -l; 
 done
 ```
-
-| Number of Assemblies | Number of nodes | Description |
-| -------------------- | --------------- | ----------- |
-| 1                    | 8609186         | Private     |
-| 2                    | 5376727         | Dispensable |
-| 3                    | 3466444         | Dispensable |
-| 4                    | 3495548         | Dispensable |
-| 5                    | 3351433         | Dispensable |
-| 6                    | 6210558         | Dispensable |
-| 7                    | 3850484         | Core        |
-| TOTAL                | 34 360 380      |             |
-| DISP TOTAL           | 21 900 710      |             |
-5. Extract node IDs per category
-Tool: seqkit grep
+5. Extract node IDs per category. Column number 2 is the total column. A sum of 7 (total number of samples) means presence of all assembles. Therefore, these nodes are considered core. For dispensable, these values become less than 7 or greater than 2. Meanwhile, a value of 1 means private category. Note that these two categories were merged into the "variable" category. The definition of these categories depend on the context of the study.
 ```
 awk '$2 == 7' asm5_graphs.table.total.tsv | cut -f1 > asm5_graphs.core.txt
 
@@ -98,18 +89,20 @@ for col in {2..8}; do
 done
 ```
 
-6. Determine quantity of repetitive elements. Edit variables inside repeat_masker_pggb.sh
+6. Determine quantity of repetitive elements. Edit variables inside `repeat_masker_pggb.sh`
 ```
 bash repeat_masker_pggb.sh
 ```
 
-Visualize
+After this step, you may choose to visualize the fractions of repeats. See `scripts/0_Visualize_Pangenome_stats_repeats.R `as an example.
 
-7. Blast repeatmasked fasta sequences
-diamond version 2.1.10
+7. Blast repeatmasked fasta sequences using
+diamond against the UniProt/SwissProt database (viridiplantae only).
 ```
+# create a database
 diamond makedb --in ~/db/uniprot_viridiplantae_canonical.fasta -d ~/db/uniprot_viridiplantae_canonical.dmnd
 
+# blast the sequences
 for fasta in asm5_graphs.core.fasta.masked asm5_graphs.dispensable.fasta.masked asm5_graphs.private.fasta.masked; do
     basename=$(basename "$fasta" .fasta.masked)
     diamond blastx \
@@ -122,15 +115,11 @@ for fasta in asm5_graphs.core.fasta.masked asm5_graphs.dispensable.fasta.masked 
         --threads 16 \
         --out "${basename}_x_uniprot_fmt6.tsv"
 done
-
-
 ```
-
 8. For each hits in dispensable and private, map node IDs and extract blast hits
 ```
 # take the column with query node number from blast tsv
 
-# DECLARE
 DIR=/opt/home/jong/oryza/asm/pggb_pangenomes/output_all_O_mer_p90/fasta_annot/
 
 for tsv in ${DIR}/asm5_graphs.private/*.tsv; do
@@ -154,10 +143,26 @@ awk 'NR==FNR {nodes[$1]; next} $1 in nodes' $tsv $GENE_LIST > ${basename}.matche
 awk '{print $2}' ${basename}.matched.tsv > ${OUT}/${basename}.hits.tsv
 done
 ```
+This step only took less than 5 minutes for a pangenome with 7 samples.
 
-9.  Use PantherDB -> Upload List -> Oryza Gene set -> Enrichment test -> Fisher's exact -> Calculate FDR. Manually place a new column called "Sample" using any TSV viewer (e.g. Excel)
+9.  For the annotation of homologous hits, go to https://pantherdb.org for Gene Ontology enrichment. Use PantherDB -> Upload List -> Oryza Gene set -> Enrichment test -> Fisher's exact -> Calculate FDR. Query the blast hits for each category or groups of interest and download the resulting tsv file.
+
+Use a help script called `Scripts/panther_prep.R` to place a sample columnn on the tsv output. For example,
+```
+Rscript panther_prep.R core.txt cre
+```
+You should have enrichment results for the following GO:
    - Biological Process
    - Molecular Function
    - Protein Class
-Visualize using the script
-`~/Desktop/LAB_Files/pggb/editing_scripts/0_Visualize_Categories_enrichment.R`
+
+
+Visualize using the following scripts. These scripts are not automated so edit the content as needed. You may also use your own visualization scripts.
+
+| Task | Script |
+|------| -------|
+| Enrichment visualization | `Scripts/0_Visualize_Categories_enrichment.R` |
+| Family and domain analysis | `Scripts/0_GeneFamily_domains_analyses.R`|
+|
+
+10. Move to `2_Gain_Loss_analysis.md`

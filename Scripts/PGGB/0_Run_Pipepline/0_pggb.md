@@ -2,7 +2,7 @@
 
 The following were the steps taken to create the pangenome graph composed of 7 assemblies, including IRGSP 1.0 and O. meridionalis as outgroup.
 
-Programs:
+Make sure the current environment has the following programs installed:
 1. PGGB v.0.7.2
 2. fastix v.0.1.0
 3. mash v.2.3
@@ -13,7 +13,7 @@ Programs:
 
 1. Prepare input sequences. Make sure that the name of the fasta files correspond to the sample names.
 ```
-working_dir=pwd
+ASM_DIR=/path/to/assemblies/
 
 cd $ASM_DIR
 
@@ -87,3 +87,24 @@ pggb -i output_all_O_mer_p90/all_rice_O_mer.fa.gz.dac1d73.community.$i.fa \
 done
 '
 ```
+
+6. Generate a phylogenetic tree using the `Scripts/trees_nj.R`. This R script is based on the `Ape package`. Make sure that this R package is installed.
+```
+Rscript trees_nj.R <path_dist_tsv> <plot_title> <output_file_path>
+```
+This will generate two trees. First is based on the neighbor-joining tree method and the second is based on heirarchical clustering. Jaccard distance was used to create the tree. Other metrics can be enabled, such as Euclidean distance, by editing the script.
+
+Example of tree using neighbor-joining method
+![alt text](nj_tree_7asms.png)
+
+Example of tree using heirarchical clustering:
+![alt text](heirarchical_clustering_7asms.png)
+
+7. To characterize the pangenome, continue the following sections:
+
+| Section | Title |
+| ------- | ------|
+| Characterization of graph | `1_characterize_pggb.md`|
+| Gain and Loss analysis | `2_gain_loss_analysis.md`|
+|
+
