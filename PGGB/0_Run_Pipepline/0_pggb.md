@@ -48,7 +48,7 @@ samtools faidx all_rice_O_mer.fa.gz
 
 ```
 
-2. Calculate mash distance for -p calculation. -p = 100 - max_divergence*100
+2. Calculate mash distance for -p calculation. -p = 100 - max_divergence*100. This parameter has a value of 90 by default. Fine-tune it as needed. Here, I am showing based on the developer's recommendation, particularly on the level of divergence between the assemblies.
 ```
 # try two parameters of -s
 mash triangle all_rice_O_mer.fa.gz -i > all_rice_O_mer.mash_triangle.default.txt
@@ -64,7 +64,7 @@ sed 1,1d all_rice_O_mer.mash_triangle.10k.txt | tr '\t' '\n' | grep chr -v | LC_
 sed 1,3d asm5.npb.fa.out | awk '{print $6, $7, $7-$6}' | awk '$3 > max {max = $3} END {print max}' | head
 ```
 
-4. Partition the sequences into communities
+4. Partition the sequences into communities. Note: The developers suggested partitioning into communities due to PGGB's memory requirements. However, this step may be skipped if there are known large-scale rearrangements in the samples being analyzed.
 ```
 partition-before-pggb -i all_rice_O_mer.fa.gz \
                       -o output_all_O_mer_p90 \
