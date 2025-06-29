@@ -31,10 +31,10 @@ Outputs several tsv values that contains the classification of the pangenome seg
 
 INPUT: matrix from script 02
 OUTPUT: 
-1. 03_Ref_Category_CountLen.tsv - summarizes the number of segments and their corresponding length per category (core, dispensable, and private)
-2. 03_Ref_Category_Core.tsv, 03_Ref_Category_Dispensable.tsv, and 03_Ref_Category_Private.tsv - tsv files containing segment information including ranks and segment offsets for each category. 
-3. segment_list - a list outputted after running intersection function which can be used as a direct input to create the intersection plot
-4. plt - a plot object after running reference_sharing function which can be run in R to visualize the different cumulative lengths of segments per combination of accession in the pangenome based on the presence-absence matrix.
+1.03_Ref_Category_CountLen.tsv - summarizes the number of segments and their corresponding length per category (core, dispensable, and private)
+2.03_Ref_Category_Core.tsv, 03_Ref_Category_Dispensable.tsv, and 03_Ref_Category_Private.tsv - tsv files containing segment information including ranks and segment offsets for each category. 
+3.segment_list - a list outputted after running intersection function which can be used as a direct input to create the intersection plot
+4.plt - a plot object after running reference_sharing function which can be run in R to visualize the different cumulative lengths of segments per combination of accession in the pangenome based on the presence-absence matrix.
 Example command: this script is to be sourced in R and its function to be used separately
 
 4. 03.2_NonRef_Analysis.R
@@ -43,9 +43,9 @@ This script requires the matrix outputted by script #2. It filters the ranks > 0
 
 INPUT: matrix from script 02
 OUTPUT: 
-1. 02_nonref_shared_count.png - returns an image of the sharing counts of nonreference sequences
-2. 02_nonref_shared_len.png -  returns an image of the cumulative lengths of the shared nonreference sequences
-3. 02_02_nonref_sharing_intersection - returns an intersection
+1.02_nonref_shared_count.png - returns an image of the sharing counts of nonreference sequences
+2.02_nonref_shared_len.png -  returns an image of the cumulative lengths of the shared nonreference sequences
+3.02_02_nonref_sharing_intersection - returns an intersection
 ```
 Rscript ../../Scripts/03.2_NonRef_analysis.R 02_Presence_Absence_ALL.tsv "IRGSP"
 ```
@@ -53,7 +53,7 @@ Rscript ../../Scripts/03.2_NonRef_analysis.R 02_Presence_Absence_ALL.tsv "IRGSP"
 5. 04_GO_viz.R
 Description: Takes a dataframe and creates a combined plot for visualization of gene ontology terms for each specificed category and number of genes. It has two functions: 1) go_visualize_1 function is strictly for the three categories of pangenomes ; 2) go_visualize_2 is for any dataframe without strict segment labels
 OUTPUT:
-1. ggplot object - can be visualized using R print
+1.ggplot object - can be visualized using R print
 Example command: this script is to be sourced in R and its function to be used separately
 
 6. 05.1_get_bialsv.py (Note: with variation)
