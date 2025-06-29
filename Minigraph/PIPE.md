@@ -1,5 +1,5 @@
-Flow and commands:
-STRUCTURAL VARIATIONS
+# Sample flow and commands:
+## STRUCTURAL VARIATIONS
 
 1. Call structural variations using gfatools
 

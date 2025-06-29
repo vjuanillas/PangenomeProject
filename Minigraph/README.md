@@ -1,4 +1,4 @@
-# README.txt
+# Processing Minigraph's output 
 
 01_coverage.py
 """
