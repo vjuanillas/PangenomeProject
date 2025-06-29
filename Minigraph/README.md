@@ -10,7 +10,7 @@ OUTPUT: 01_combined_coverage.tsv, a file with all the coverages parsed from the 
 ```
 python 01_coverage.py -g nip -a IRGSP nh232 cw02 nh236 nh286 nh273 -d remapping_files -o coverage_v2
 ```
-# update 07.27 - added parser edge coverage as input in structural variations calling
+`update 07.27 - added parser edge coverage as input in structural variations calling`
 
 2. 02_Presence_absence.R
 Description:
@@ -72,7 +72,7 @@ Output: test_05_biallelic_asm_paths.tsv - tsv file containing biallelic bubbles,
 ```
 python 0x_trace_path.py -b /Users/jongpaduhilao/Desktop/LAB_Files/Initial_Pangenome_analysis/Trial_4/crysnanto_bubble/asm5.nip.biallelic_sv.tsv -a /Users/jongpaduhilao/Desktop/LAB_Files/Initial_Pangenome_analysis/bubble/04_bubble -o test_05_biallelic_asm_paths
 ```
-update 11.27 - hashed the chromosome handling due to redundancy and leading to indexing error
+`update 11.27 - hashed the chromosome handling due to redundancy and leading to indexing error`
 
 Use bedtools for intersection with annotation files. 
 
