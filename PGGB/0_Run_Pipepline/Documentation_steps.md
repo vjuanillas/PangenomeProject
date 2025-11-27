@@ -1,6 +1,5 @@
 # **Documentation on running the PGGB Pangenome on the HPZ server**
 
-**Server Address:** 
 
 # **Steps in running:**
 
