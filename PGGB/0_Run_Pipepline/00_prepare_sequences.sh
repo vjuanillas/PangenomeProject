@@ -1,8 +1,7 @@
 working_dir=pwd
 
-
-ASM_DIR="/opt/home/venice/asms/"
-FASTIX="./opt/home/venice/.cargo/bin/fastix"
+ASM_DIR="~/asms/"
+FASTIX="~/.cargo/bin/fastix"
 
 cd $ASM_DIR
 
@@ -20,8 +19,7 @@ basename=$(basename "$asm" .renamed.fasta);
 fastix -p "${basename}#0#" $asm > "${basename}_prefixed.fa"; 
 done 
 
-#export PATH="/opt/home/jong/.cargo/bin:$PATH"
-export PATH="/opt/home/venice/.cargo/bin:$PATH"
+export PATH="~/.cargo/bin:$PATH"
 
 
 fastix -p "O_mer#0#" $asm > "O_mer_prefixed.fa"
