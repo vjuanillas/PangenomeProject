@@ -87,10 +87,9 @@ pggb -i output_all_O_mer_p90/all_rice_O_mer.fa.gz.dac1d73.community.$i.fa \
 done
 '
 ```
-
+```
 5.1. Generate the path_distance_tsv using the 'odgi similarity': $ odgi similarity -i asm5_graphs.p60.og -d --delim '#' -p 1 > asm5_graphs.p60.jaccard_dist.tsv
-
-
+```
 6. Generate a phylogenetic tree using the `Scripts/trees_nj.R`. This R script is based on the `Ape package`. Make sure that this R package is installed.
 ```
 Rscript trees_nj.R <path_dist_tsv> <plot_title> <output_file_path>
