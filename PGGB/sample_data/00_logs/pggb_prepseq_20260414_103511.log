@@ -1,0 +1,23 @@
+Copying assemblies...
+All assembly files now in 01_prefixed/
+----------------------------------
+Prefixing FASTA headers...
+./00_prepare_sequences.sh: line 26: parallel: command not found
+----------------------------------
+Concatenating all assemblies...
+cat: '01_prefixed/*_prefixed.fa': No such file or directory
+Done concatenating.
+----------------------------------
+Checking a few headers...
+----------------------------------
+Done checking.
+----------------------------------
+Compressing the fasta file...
+Fasta file compression done!
+----------------------------------
+Indexing fasta file...
+[E::fai_build_core] File truncated at line 1
+[faidx] Could not build fai index 02_merged/all_prefixed.fa.gz.fai
+Indexing done!
+----------------------------------
+File preparations done!
