@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
-ENV_NAME="pggb_pangenome"
+ENV_NAME="pggb"
 
 echo "=== Creating conda environment: $ENV_NAME ==="
 conda create -y -n $ENV_NAME python=3.10

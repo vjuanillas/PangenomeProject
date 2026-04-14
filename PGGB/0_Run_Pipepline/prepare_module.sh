@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 echo "=== Configuring channels ==="
 conda config --add channels bioconda

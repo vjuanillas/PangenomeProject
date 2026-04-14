@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Directories
-PROJ_DIR="$HOME/landrace10_asm5"
+PROJ_DIR="$HOME/landrace10"
 MERGE_FA="$PROJ_DIR/02_merged/all_prefixed.fa.gz"
 REPEAT_FILE="/opt/home/venice/landrace10_asm5/repeatmasker/all_rice_O_mer.fa.out" # specify RepeatMasker out file, not tbl
 OUT_DIR="$PROJ_DIR/03_mash"
