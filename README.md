@@ -1,8 +1,8 @@
-# Wild-and-Cultivated-Rice-Pangenome
+# Taiwanese Landraces Rice Pangenome
 
 ## Starting with PGGB Pangenome
 
-The following were the steps taken to create the pangenome graph composed of 7 assemblies, including IRGSP 1.0 and O. meridionalis as an outgroup.
+The following were the steps taken to create the pangenome graph composed of 10 assemblies, including IRGSP 1.0, and O. meridionalis as an outgroup.
 
 Programs:
 1. PGGB v.0.7.2
