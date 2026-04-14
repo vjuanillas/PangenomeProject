@@ -7,6 +7,8 @@ mkdir -p "$LOG_DIR"
 
 echo "Extracting UniProt IDs..."
 
+# For each of the pangenome category files (core,dispensable, and private)
+# from Diamond BLASTx, get the homologous gene sequence ID hits
 for group in core dispensable private
 do
 	infile="${group}_x_uniprot_fmt6.tsv"
@@ -25,10 +27,13 @@ chunk_file() {
 	split -l 1000 -d --additional-suffix=.txt "$1" "$2"
 }
 
+# This is for the GO Complete annotations. 
+# Not used since GO Slim is preferred.
 #DATABASES=("GO:0008150" "GO:0003674" "PANTHER_PC")
 
 echo "Running PANTHER overrepresentation analysis..."
 
+# Run on each category
 for group in core dispensable private
 do
 	LOG_FILE="${LOG_DIR}/${group}_panther.log"
@@ -46,6 +51,7 @@ do
 		IDS=$(tr -d '\r' < "$chunk" | paste -sd,)
 
 		base="${chunk%.txt}"
+		# GO SLIM dataset annotation
 		for dataset in "ANNOT_TYPE_ID_PANTHER_GO_SLIM_BP" "ANNOT_TYPE_ID_PANTHER_GO_SLIM_MF" "ANNOT_TYPE_ID_PANTHER_PC"
 		do
 			case $dataset in
@@ -53,32 +59,25 @@ do
 				*MF*) suffix="mf" ;;
 				*PC*) suffix="pc" ;;
 			esac
-
+			
 			OUT_FILE="$OUT_DIR/${base}_${suffix}.json"
 
 			echo "Running $dataset on $chunk" | tee -a "$LOG_FILE"
 
-	#curl -X POST "https://pantherdb.org/services/oai/pantherdb/enrich/overrep" \
-	#	-H "Content-Type: application/x-www-form-urlencoded" \
-	#	-d "geneInputList=${IDS}" \
-	#	-d "organism=39947" \
-	#	-d "annotDataSet=ANNOT_TYPE_ID_PANTHER_GO_SLIM_BP" \                #Biological Process
-	#	-d "enrichmentTestType=FISHER" \
-	#	-d "correction=FDR" \
-	#	-w "\nHTTP_STATUS:%{http_code}\nTIME_TOTAL:%{time_total}\n" \
-	#	-o ${group}_panther_enrichment_bp.json \
-	#	2>> "$LOG_FILE" | tee -a "$LOG_FILE"
-			
+			# For more information regarding the PantherDB API:
+			# https://pantherdb.org/services/tryItOut.jsp?url=%2Fservices%2Fapi%2Fpanther
+			# This part uses: PANTHER Tools - Enrichment (Overrepresentation)	
 			curl -sSL -X POST "https://pantherdb.org/services/oai/pantherdb/enrich/overrep" \
 				-H "Content-Type: application/x-www-form-urlencoded" \
-				--data-urlencode "geneInputList=${IDS}" \
-				--data-urlencode "organism=39947" \
-				--data-urlencode "annotDataSet=${dataset}" \
+				--data-urlencode "geneInputList=${IDS}" \			
+				--data-urlencode "organism=39947" \				# 39947 = Oryza sativa
+				--data-urlencode "annotDataSet=${dataset}" \ 			# Use the GO Slim annotation sets
 				--data-urlencode "enrichmentTestType=FISHER" \
 				--data-urlencode "correction=FDR" \
 				-w "\nHTTP_STATUS:%{http_code}\nTIME_TOTAL:%{time_total}\n" \
 				-o "$OUT_FILE" \
 				2>> "$LOG_FILE" | tee -a "$LOG_FILE"
+			
 
 			echo "Saved output to $OUT_FILE" | tee -a "$LOG_FILE"
 			echo "----------------------------------------" | tee -a "$LOG_FILE"
