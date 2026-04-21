@@ -28,7 +28,7 @@ chunk_file() {
 }
 
 # This is for the GO Complete annotations. 
-# Not used since GO Slim is preferred.
+# Not used since GO Slim was used for this study.
 #DATABASES=("GO:0008150" "GO:0003674" "PANTHER_PC")
 
 echo "Running PANTHER overrepresentation analysis..."
