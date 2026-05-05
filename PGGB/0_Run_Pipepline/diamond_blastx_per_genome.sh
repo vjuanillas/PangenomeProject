@@ -24,16 +24,13 @@ files=($FASTA_DIR/*.fasta)
 #THREADS=$((TOTAL_CORES / JOBS))
 THREADS=3
 
-#for fasta in ./private/private.fasta.masked \
-#	     ./dispensable/dispensable.fasta.masked \
-#	     ./core/core.fasta.masked
 for fasta in "${files[@]}"
 do
 	(
 		base=$(basename $fasta .fasta)
 		
 		echo "Now processing: $fasta...\n"
-		#echo "Will write output to $DIAMOND_DIR/${base}_x_uniprot_fmt6.tsv"
+		
 		diamond blastx \
 		--query "$fasta" \
 		--db "$DIAMOND_DB" \
