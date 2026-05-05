@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROJ_DIR="/opt/home/venice/updated_scripts/PangenomeProject/PGGB/sample_data/"  # To do: edit to dynamically change project directory name
+PROJ_DIR="/opt/home/venice/asms5"  # To do: edit to dynamically change project directory name
 ASM_DIR="$PROJ_DIR/assembly_files"	# This directory should contain all the raw assembly files you have (fasta format)
 THREADS=8				# Depends on your computer/machine
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")	# 
