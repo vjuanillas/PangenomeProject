@@ -14,6 +14,8 @@ Make sure your current environment as the following programs installed:
 bash vcf_handle_v2.sh
 ```
 This should generate a cleaned and merged vcf file from each community. 
+
+
 2. Next, we classify and filter the variants into classes: INDELs and SVs. The definition of INDELs is variants with length less than 50 bp. Meanwhile, variants with length greater than 50 bp are defined as SVs. Use and edit `Scripts/1_Process_vcf.R` in Rstudio to tail to your needs. There are sections that you need to edit inside the R script. This section is entitled:
 `Per-taxon parsimonious combination`
 
@@ -44,8 +46,13 @@ whole_genome/VCF_clean_gain_forMAP.txt | gain with accession |
 | whole_genome/VCF_clean_loss_forMAP.txt | loss with accessions |
 |
 
-3. Visualize the gain and loss using `Scripts/2_tree_viz_gainloss_v4.R`. Adjust the arrangement and the combinations to your context. 
-4. To quantify the repeats for each variation included in the parsimony tree, extract the sequences using a custom script called `Scripts/Extract_fasta_Annotate_GAIN_LOSS.R`. Then, use the script `Scripts/3_Repeats_extract_visualize_repeats.R` to visualize the fractions. 
+
+3. Visualize the gain and loss using `Scripts/2_tree_viz_gainloss_v4.R`. Adjust the arrangement and the combinations to your context.
+   
+4. To quantify the repeats for each variation included in the parsimony tree, extract the sequences using a custom script called `Scripts/Extract_fasta_Annotate_GAIN_LOSS.R`. Then, use the script `Scripts/3_Repeats_extract_visualize_repeats.R` to visualize the fractions.
+
 5. Deconstruct using IRGSP
+
 6. bedtools intersect
+
 7. Use the `Scripts/4_VCF_intersection.R` to analyze the genes for 
